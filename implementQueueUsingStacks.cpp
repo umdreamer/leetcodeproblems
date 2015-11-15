@@ -1,3 +1,6 @@
+/**
+ * https://leetcode.com/problems/implement-queue-using-stacks/
+ */
 class Queue {
 public:
     // Push element x to the back of queue.
@@ -65,3 +68,4 @@ private:
     int m_backCursor;  // end)
     int m_queueSize;   // size = back-front
 };
+
