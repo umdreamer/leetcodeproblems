@@ -8,19 +8,28 @@
 #include <vector>
 
 using namespace std;
+
 class Solution {
 public:
     bool isNumber(string s) {
+        string sub(s);
+        string::size_type pos1 = s.find_first_not_of(' ');
+        if (pos1 != string::npos) {
+            string::size_type pos2 = s.find_last_not_of(' ');
+            sub = sub.substr(pos1, pos2-pos1+1);
+        }
+        printf("before:%s ==> after:%s\n", s.c_str(), sub.c_str());
+        
         bool hasSign = false;  // "+-"
         bool hasPoint = false; // "."
         bool hasDigit = false;
         bool hasE = false; // "e"
-        for (int i=0; i<s.length(); ++i) {
-            if (isDigit(s[i])) {
+        for (int i=0; i<sub.length(); ++i) {
+            if (isDigit(sub[i])) {
                 if (!hasDigit) {
                     hasDigit = true;
                 }
-            } else if (isE(s[i])) {
+            } else if (isE(sub[i])) {
                 if (i == 0) {
                     return false;
                 }
@@ -29,11 +38,11 @@ public:
                     return false;
                 }
                 
-                if ( (!isPoint(s[i-1])) && (!isDigit(s[i-1])) ) { // before e: .1e==>true
+                if ( (!isPoint(sub[i-1])) && (!isDigit(sub[i-1])) ) { // before e: .1e==>true
                     return false;
                 }
                 
-                if ( (!isSign(s[i+1])) && (!isDigit(s[i+1])) ) { // after e: 1e+1==>true, 1e-1==>true. 1e-.5==>false
+                if ( (!isSign(sub[i+1])) && (!isDigit(sub[i+1])) ) { // after e: 1e+1==>true, 1e-1==>true. 1e-.5==>false
                     return false;
                 }
                 
@@ -42,7 +51,7 @@ public:
                 } else { 
                     return false;
                 }
-            } else if (isPoint(s[i])) {
+            } else if (isPoint(sub[i])) {
                 if (hasE) {   // 1e.5==>false, 1e5.==>false
                     return false;
                 }
@@ -52,27 +61,22 @@ public:
                 } else {
                     return false;
                 }
-            } else if (isSign(s[i])) {
+            } else if (isSign(sub[i])) {
                 if (!hasE) { // before e
                     if (hasPoint || hasDigit) {
                         return false;
                     }
                 } else { // after e
-                    if ( (!isE(s[i-1])) ) {// e+
+                    if ( (!isE(sub[i-1])) ) {// e+
+                        return false;
+                    }
+                    if (!isDigit(sub[i+1]) ) { //e+1, e+.1
                         return false;
                     }
                 }
 
-                //if (!hasSign) { 
-                //    hasSign = true;
-                //} else {
-                    //return false;
-                //}
-            } else if (s[i] == ' ') {
-                if (hasE || hasDigit || hasPoint) {
-                    return false;
-                }
-                continue; // ignore whitespace
+            } else if (sub[i] == ' ') {
+                return false;
             } else {
                 return false;
             }
@@ -118,9 +122,15 @@ int main(int argc, char** argv) {
     testCase.push_back("0.1");
     testCase.push_back("abc");
     testCase.push_back("1 a");
+    testCase.push_back("1 1");
     testCase.push_back("2e10");
     testCase.push_back("1e+5");
     testCase.push_back("1e-5");
+    testCase.push_back("  1e-0   ");
+    testCase.push_back("    ");
+    testCase.push_back("4e+");
+    testCase.push_back("4+e");
+    testCase.push_back("4e+.2");
 
     for (int i=0; i<testCase.size(); ++i) {
         printf("%s ==> %d\n", testCase[i].c_str(), s.isNumber(testCase[i]));
