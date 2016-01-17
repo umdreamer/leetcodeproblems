@@ -41,6 +41,16 @@ public:
         return method1(s);    
     }
 private:
+    int method2(string s) {
+        int n = s.length();
+
+        for (int i=0; i<n; ++i) {
+            if (lut[s[i]] % 1000 == 0) {
+            }
+        }
+
+    }
+
     int method1(string s) {
         int n = s.length();
         int sum = lut[s[0]];
